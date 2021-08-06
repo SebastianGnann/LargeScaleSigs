@@ -1,5 +1,5 @@
-function [] = plotMapUS(lat,lon,z,varargin)
-%plotMapUS Plots US map with dots coloured according to an attribute.
+function [] = plotMapAUS(lat,lon,z,varargin)
+%plotMapAUS Plots AUS map with dots coloured according to an attribute.
 %   Options:
 %   - various plotting options (axes limits, colorbar appearance, etc.)
 %   - save plot
@@ -19,7 +19,7 @@ function [] = plotMapUS(lat,lon,z,varargin)
 %   nr_colours: number of colours used for colourscale
 %   c_log_scale: whether colour scale should be on a log scale (boolean)
 %   figure_title: title of plot, e.g. '(a)'
-%   figure_name: name for saving, e.g. 'US_map'
+%   figure_name: name for saving, e.g. 'AUS_map'
 %   save_figure: whether to save plot (boolean)
 %   figure_path: path to folder where figure should be saved (char)
 %   figure_type: figure type, e.g. -dpdf or -dmeta
@@ -54,7 +54,7 @@ addParameter(ip, 'c_upper_limit_open', false, @islogical)
 addParameter(ip, 'nr_colours', 10, @isnumeric)
 addParameter(ip, 'c_log_scale', false, @islogical)
 addParameter(ip, 'figure_title', '', @ischar)
-addParameter(ip, 'figure_name', 'map_US', @ischar)
+addParameter(ip, 'figure_name', 'map_AUS', @ischar)
 addParameter(ip, 'save_figure', false, @islogical)
 addParameter(ip, 'figure_path', './', @ischar)
 addParameter(ip, 'figure_type', '-dpdf', @ischar)
@@ -77,16 +77,15 @@ figure_path = ip.Results.figure_path;
 figure_type = ip.Results.figure_type;
 
 %% plotting
-index = [1:length(ID)]';
+index = [1:length(z)]';
 
 % plot map
-pos = [100 100 600 300];
+pos = [100 100 500 500];
 fig = figure('Name',figure_name,'NumberTitle','off','pos',pos);
-ax = axesm('MapProjection','mercator','MapLatLimit',[24 52],'MapLonLimit',[-130 -65]);
-shapefile = shaperead('usastatelo', 'UseGeoCoords', true);
-% shapefile = shaperead('USA_50m.shp', 'UseGeoCoords', true);
+ax = axesm('MapProjection','mercator','MapLatLimit',[-44 -10],'MapLonLimit',[112 154]);
+shapefile = shaperead('australia_50m.shp', 'UseGeoCoords', true);
 geoshow(ax, shapefile, ...
-    'DisplayType','polygon','DefaultFaceColor','white','DefaultEdgeColor','black')
+    'DisplayType','polygon','DefaultFaceColor','white','DefaultEdgeColor','black') %geoshow
 hold on
 % grid on
 
@@ -94,7 +93,9 @@ hold on
 colour_mat = brewermap(nr_colours,colour_scheme);
 
 % plot attribute
-scatterm(lat(isnan(z)),lon(isnan(z)),'x k','linewidth',1.2);
+h = scatterm(lat(isnan(z)),lon(isnan(z)),'x k','linewidth',1.0);
+% h = scatterm(lat(isnan(z)),lon(isnan(z)),20,'linewidth',1.0,'markeredgecolor',[.5 .5 .5]);
+% h.Children.MarkerFaceAlpha = .5;
 scatterm(lat,lon,25,z,'filled')
 % xlabel('Latitude [km]'); ylabel('Longitude [km]')
 set(gca,'Visible','off')
@@ -109,7 +110,7 @@ if flip_colour_scheme
     colormap(flipud(cmap));
 end
 c = colorbar;
-c.Position = [0.85 0.2 0.0117 0.25]; 
+c.Position = [0.3 0.15 0.014 0.15]; 
 title(c,attribute_name)
 caxis(c_limits)
 if c_lower_limit_open
@@ -128,7 +129,7 @@ set(dcm_obj,'UpdateFcn',{@myupdatefcn,ID,index})
 
 %% save fig
 if save_figure
-    saveFig(fig,strcat('US_',figure_name),figure_path,figure_type)
+    saveFig(fig,strcat('AUS_',figure_name),figure_path,figure_type)
 end
 
 end

@@ -33,6 +33,7 @@ h = gca;
 c = colorbar(h);
 h.Visible = 'off';
 h.Position(4) = h.Position(4)*0.9;
+h.Position(1) = h.Position(1)*1.5;
 axis(h, 'equal')
 if strcmp(set,'gw')
     c.Position = [0.10 0.10 0.0321 0.1286];

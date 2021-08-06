@@ -1,9 +1,11 @@
-function [t_mat, Q_mat, P_mat, PET_mat, flow_perc_complete] = createCellCAMELS(CAMELS_data)
+function [t_mat, Q_mat, P_mat, PET_mat, flow_perc_complete] = ...
+    createCellCAMELS(CAMELS_data, period, start_water_year)
 %createCellCAMELS Creates cell array for certain time period.
 %
 %   INPUT
 %   CAMELS_data: CAMELS data struct file
 %   period: water years to be extracted ([start_year end_year])
+%   start_water_year: beginning of water year (e.g. 10 for October)
 %
 %   OUTPUT
 %   t_mat: time matrix
@@ -19,6 +21,9 @@ if nargin < 1
 end 
 if nargin < 2
     period = [1989 2009];
+end
+if nargin < 3
+    start_water_year = 10;
 end
 
 n_CAMELS = length(CAMELS_data.gauge_id);
@@ -44,14 +49,15 @@ for i = 1:n_CAMELS
     
     % get subperiod
     indices = 1:length(t); 
-    start_ind = indices(t==datetime(period(1),10,1));
+    start_ind = indices(t==datetime(period(1),start_water_year,1));
     % in case time series starts after start date
     if isempty(start_ind); start_ind = 1; end 
-    end_ind = indices(t==datetime(period(2),9,30));    
+    end_ind = indices(t==(datetime(period(2),start_water_year,1)-1));    
     t = t(start_ind:end_ind);
     Q = Q(start_ind:end_ind);
     P = P(start_ind:end_ind);
     PET = PET(start_ind:end_ind);
+    PET(PET<0) = 0; % set negative PET values to 0
     % calculate completeness during sub-period
     flow_perc_complete(i) = 100*(1-sum(isnan(Q))./length(Q));
     

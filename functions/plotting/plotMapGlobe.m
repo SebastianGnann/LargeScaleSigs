@@ -1,7 +1,7 @@
-function [] = plotMapUS(lat,lon,z,varargin)
-%plotMapUS Plots US map with dots coloured according to an attribute.
+function [] = plotMapGlobe(lat,lon,z,varargin)
+%plotMapGlobe Plots Globe map with dots coloured according to an attribute.
 %   Options:
-%   - various plotting options (axes limits, colorbar appearance, etc.)
+%   - varioGlobe plotting options (axes limits, colorbar appearance, etc.)
 %   - save plot
 %
 %   INPUT
@@ -16,10 +16,10 @@ function [] = plotMapUS(lat,lon,z,varargin)
 %   c_limits: limits of colour axis, e.g. [0 1]
 %   c_lower_limit_open: whether the the lower limit is open (boolean)
 %   c_upper_limit_open: whether the upper limit is open (boolean)
-%   nr_colours: number of colours used for colourscale
+%   nr_colours: number of colours Globeed for colourscale
 %   c_log_scale: whether colour scale should be on a log scale (boolean)
 %   figure_title: title of plot, e.g. '(a)'
-%   figure_name: name for saving, e.g. 'US_map'
+%   figure_name: name for saving, e.g. 'Globe_map'
 %   save_figure: whether to save plot (boolean)
 %   figure_path: path to folder where figure should be saved (char)
 %   figure_type: figure type, e.g. -dpdf or -dmeta
@@ -54,7 +54,7 @@ addParameter(ip, 'c_upper_limit_open', false, @islogical)
 addParameter(ip, 'nr_colours', 10, @isnumeric)
 addParameter(ip, 'c_log_scale', false, @islogical)
 addParameter(ip, 'figure_title', '', @ischar)
-addParameter(ip, 'figure_name', 'map_US', @ischar)
+addParameter(ip, 'figure_name', 'map_Globe', @ischar)
 addParameter(ip, 'save_figure', false, @islogical)
 addParameter(ip, 'figure_path', './', @ischar)
 addParameter(ip, 'figure_type', '-dpdf', @ischar)
@@ -80,11 +80,10 @@ figure_type = ip.Results.figure_type;
 index = [1:length(ID)]';
 
 % plot map
-pos = [100 100 600 300];
+pos = [100 100 900 600];
 fig = figure('Name',figure_name,'NumberTitle','off','pos',pos);
-ax = axesm('MapProjection','mercator','MapLatLimit',[24 52],'MapLonLimit',[-130 -65]);
-shapefile = shaperead('usastatelo', 'UseGeoCoords', true);
-% shapefile = shaperead('USA_50m.shp', 'UseGeoCoords', true);
+ax = axesm('MapProjection','mercator','MapLatLimit',[-75 75],'MapLonLimit',[-180 180]);
+shapefile = shaperead('Globe_50m.shp', 'UseGeoCoords', true);
 geoshow(ax, shapefile, ...
     'DisplayType','polygon','DefaultFaceColor','white','DefaultEdgeColor','black')
 hold on
@@ -101,7 +100,7 @@ set(gca,'Visible','off')
 title(figure_title,'Visible','on')
 axis equal
 
-% adjust colour bar
+% adjGlobet colour bar
 colormap(colour_mat)
 % colormap(colour_scheme);
 if flip_colour_scheme
@@ -109,7 +108,7 @@ if flip_colour_scheme
     colormap(flipud(cmap));
 end
 c = colorbar;
-c.Position = [0.85 0.2 0.0117 0.25]; 
+c.Position = [0.2 0.25 0.0078 0.125]; 
 title(c,attribute_name)
 caxis(c_limits)
 if c_lower_limit_open
@@ -128,7 +127,7 @@ set(dcm_obj,'UpdateFcn',{@myupdatefcn,ID,index})
 
 %% save fig
 if save_figure
-    saveFig(fig,strcat('US_',figure_name),figure_path,figure_type)
+    saveFig(fig,strcat('Globe_',figure_name),figure_path,figure_type)
 end
 
 end

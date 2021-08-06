@@ -1,5 +1,5 @@
 function [] = saveFig(fig,figure_name,figure_path,figure_type)
-%saveFig saves figure as PDF.
+%saveFig saves figure as selected file type (e.g. PDF).
 %
 %   INPUT
 %   fig: figure
@@ -11,9 +11,9 @@ function [] = saveFig(fig,figure_name,figure_path,figure_type)
 %   OUTPUT
 %   saved figure
 %
-%   ---
-%
-%   Sebastian Gnann, sebastian.gnann@bristol.ac.uk (2020)
+%   Copyright (C) 2021
+%   This software is distributed under the GNU Public License Version 3.
+%   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
 
 % check input parameters
 if nargin < 3
@@ -27,7 +27,7 @@ position = get(fig,'Position');
 set(fig,'PaperPositionMode','Auto','PaperUnits','Inches',...
     'PaperSize',[position(3),position(4)]);
 figure_name = strcat(figure_name);
-path = strcat(figure_path,'\',figure_name);
+path = strcat(figure_path,'/',figure_name);
 print(fig,path,figure_type,'-r500'); 
 
 end
