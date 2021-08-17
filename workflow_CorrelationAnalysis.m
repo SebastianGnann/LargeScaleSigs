@@ -56,7 +56,8 @@ CAMELS_signatures_OverlandFlow = ...
     load(strcat(results_path,'CAMELS_signatures_OverlandFlow.mat'));
 
 %% correlation matrix groundwater
-% ...
+% We create a matrix with all groundwater signatures, calculate their
+% correlation with each other, and plot the results.
 
 Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.TotalRR,...
@@ -103,7 +104,8 @@ rho_Groundwater = corr(Groundwater_matrix,'rows','complete','type','Spearman');
 correlationMatrixCircles(rho_Groundwater,signature_names_Groundwater,'gw',fig_path)
 
 %% correlation matrix overland flow
-%...
+% We create a matrix with all overland flow signatures, calculate their
+% correlation with each other, and plot the results.
 
 OverlandFlow_matrix = [...
     CAMELS_signatures_OverlandFlow.IE_effect,...
@@ -138,7 +140,8 @@ rho_OverlandFlow = corr(OverlandFlow_matrix,'rows','complete','type','Spearman')
 correlationMatrixCircles(rho_OverlandFlow,signature_names_OverlandFlow,'of',fig_path)
 
 %% show distributions of signature with quartiles
-% ...
+% We plot the distributions of each signature per country and calculate
+% different quantiles.
 % add units
 signature_names_Groundwater = {...
     'TotalRR [-]',...
@@ -165,18 +168,20 @@ ranges = [0 1; 0 4; 0 1; 0 1; ...
 colour_mat = [brewermap(4,'Spectral') .8*ones(4,1)];
 fig = figure('pos',[100 100 700 500]);
 quant_mat = NaN(16,5);
+quant_mat_country = NaN(16,5,4);
 for i = 1:16
     subplot(4,4,i)
     hold on
     tmp = Groundwater_matrix(:,i);
-%     [f,xi] = ksdensity(tmp);
-%     plot(xi,f,'k','linewidth',2)
-%     I = calcMoransI(gauge_lat,gauge_lon,tmp);
+    [f,xi] = ksdensity(tmp);
+%     plot(xi,f,'color',[0.5 0.5 0.5],'linewidth',2)
+%     I = calcMoransI(attributes.gauge_lat,attributes.gauge_lon,tmp);
     quant_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
     for j = 1:4
         [f,xi] = ksdensity(tmp(attributes.country==j));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-%         histogram(tmp_country,20)
+        quant_mat_country(i,:,j) = ...
+            quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
     end
     xlabel(signature_names_Groundwater{i})
     xlim(ranges(i,:))
@@ -208,6 +213,7 @@ ranges = [-0.4 0.8; 0 1; 0 1; 0 60; ...
 colour_mat = [brewermap(4,'Spectral') .8*ones(4,1)];
 fig = figure('pos',[100 100 700 360]);
 quant_mat = NaN(10,5);
+quant_mat_country = NaN(10,5,4);
 for i = 1:10
     subplot(3,4,i)
     hold on
@@ -216,7 +222,8 @@ for i = 1:10
     for j = 1:4
         [f,xi] = ksdensity(tmp(attributes.country==j));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-%         histogram(tmp_country,20)
+        quant_mat_country(i,:,j) = ...
+            quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
     end
     xlabel(signature_names_OverlandFlow{i})
     xlim(ranges(i,:))

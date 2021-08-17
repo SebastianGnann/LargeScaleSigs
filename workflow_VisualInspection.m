@@ -81,14 +81,14 @@ plotMapUS(attributes.gauge_lat,attributes.gauge_lon,...
     'figure_name','','save_figure',false,'figure_path',fig_path)
 
 plotMapGlobe(attributes.gauge_lat,attributes.gauge_lon,...
-    attributes.aridity,...
+    CAMELS_signatures_OverlandFlow.IE_effect./CAMELS_signatures_OverlandFlow.SE_effect,...
     'attribute_name','',...
     'ID',attributes.gauge_id,...
     'colour_scheme','YlGnBu','flip_colour_scheme',false,...
     'figure_name','','save_figure',false,'figure_path',fig_path)
 
 %% plot time series
-i = 930;
+i = 888;
 t = t_mat{i};
 P = P_mat{i};
 PET = PET_mat{i};
@@ -123,7 +123,7 @@ set(ax, 'SortMethod', 'depth')
 % find 5 catchments per country, randomly picked
 ind = [1,101,472,544,667,670,704,732,763,785,789,818,839,860,874,878,910,930,1002,1354];
 
-for j = 1:length(ind)
+for j = 11:length(ind)
     
     i = ind(j);
     
