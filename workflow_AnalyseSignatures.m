@@ -5,7 +5,7 @@
 %   - correlation matrices are plotted to show how the signatures of each
 %   set (groundwater and overland flow set) are correlated,
 %   - signature distributions (smoothed histograms) are plotted for each
-%   country and different percentiles are calculated,
+%   country and different quantiles are calculated,
 %   - scatter plots showing how the signatures vary with aridity are
 %   plotted and the correlations calculated.
 %
@@ -168,8 +168,8 @@ ranges = [0 1; 0 4; 0 1; 0 1; ...
     0 1; 0 1.5; 0 1; 0 0.4];
 colour_mat = [brewermap(4,'Spectral') .8*ones(4,1)];
 fig = figure('pos',[100 100 700 500]);
-groundwater_percentile_mat = NaN(16,5);
-groundwater_percentile_mat_country = NaN(16,5,4);
+groundwater_quantile_mat = NaN(16,5);
+groundwater_quantile_mat_country = NaN(16,5,4);
 for i = 1:16
     subplot(4,4,i)
     hold on
@@ -177,11 +177,11 @@ for i = 1:16
     [f,xi] = ksdensity(tmp);
     %     plot(xi,f,'color',[0.5 0.5 0.5],'linewidth',2)
     %     I = calcMoransI(attributes.gauge_lat,attributes.gauge_lon,tmp);
-    groundwater_percentile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
+    groundwater_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
     for j = 1:4
         [f,xi] = ksdensity(tmp(attributes.country==j));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-        groundwater_percentile_mat_country(i,:,j) = ...
+        groundwater_quantile_mat_country(i,:,j) = ...
             quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
     end
     xlabel(signature_names_Groundwater{i})
@@ -212,17 +212,17 @@ ranges = [-0.4 0.8; 0 1; 0 1; 0 60; ...
     0 150; 0 10];
 colour_mat = [brewermap(4,'Spectral') .8*ones(4,1)];
 fig = figure('pos',[100 100 700 360]);
-overland_flow_percentile_mat = NaN(10,5);
-overland_flow_percentile_mat_country = NaN(10,5,4);
+overland_flow_quantile_mat = NaN(10,5);
+overland_flow_quantile_mat_country = NaN(10,5,4);
 for i = 1:10
     subplot(3,4,i)
     hold on
     tmp = OverlandFlow_matrix(:,i);
-    overland_flow_percentile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
+    overland_flow_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
     for j = 1:4
         [f,xi] = ksdensity(tmp(attributes.country==j));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-        overland_flow_percentile_mat_country(i,:,j) = ...
+        overland_flow_quantile_mat_country(i,:,j) = ...
             quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
     end
     xlabel(signature_names_OverlandFlow{i})
@@ -294,4 +294,11 @@ leg.Position = [.55 .17 .10 .11];
 saveFig(fig,strcat('aridity_of'),fig_path,'-dpng')
 
 %% return quantile value for a given signature
-% calc...
+% groundwater
+Groundwater_CZO = Groundwater_matrix(1,:)';
+CZO_groundwater_quantile_mat = ...
+    calcInvQuantileGW(Groundwater_matrix,attributes,Groundwater_CZO);
+% overland flow
+OverlandFlow_CZO = OverlandFlow_matrix(1,:)';
+CZO_overland_flow_quantile_mat = ...
+    calcInvQuantileOF(OverlandFlow_matrix,attributes,OverlandFlow_CZO);

@@ -1,4 +1,0 @@
-function quantile = calcQuantile()
-% ...
-
-end
