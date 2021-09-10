@@ -1,9 +1,15 @@
 %% workflow_CalculateSignatures
 % 
 %   This script shows how to process the CAMELS struct files created with
-%   saveCAMELSdata.m; specifically, it shows how to:
-%   - load the struct files 
-%   - use the time series to calculate some metrics (using the TOSSH toolbox). 
+%   saveCAMELSdata.m - the code to create Matlab struct files for all the
+%   CAMELS datasets can be found at:
+%   https://github.com/SebastianGnann/CAMELS_Matlab
+%
+%   Specifically, this script:
+%   - loads the struct files,
+%   - uses the time series to calculate the groundwater and the overland
+%   flow signature sets using the TOSSH toolbox 
+%   (https://github.com/TOSSHtoolbox/TOSSH). 
 %
 %   Note that this script requires sufficient RAM.
 %
@@ -26,24 +32,21 @@ else
 end
 
 %% add paths
-
 % working directory (important so that functions herein are called)
 mydir = 'Signatures_large_scales';
 addpath(genpath(mydir));
-
 % figure path
 fig_path = 'Signatures_large_scales/results/images';
 results_path = 'Signatures_large_scales/results/';
 
 %% load catchment data
-
 CAMELS_US_data = load('CAMELS_Matlab/Data/CAMELS_US_data.mat');
 CAMELS_GB_data = load('CAMELS_Matlab/Data/CAMELS_GB_data.mat');
 CAMELS_AUS_data = load('CAMELS_Matlab/Data/CAMELS_AUS_data.mat');
 CAMELS_BR_data = load('CAMELS_Matlab/Data/CAMELS_BR_data.mat');
 % CAMELS_CL_data = load('CAMELS_Matlab/Data/CAMELS_CL_data.mat');
 
-%% Calculate signatures using TOSSH
+%% calculate signatures using TOSSH
 % We first merge the different CAMELS datasets and remove catchments that 
 % do not meet our quality criteria (e.g. because of human impacts). We also 
 % extract a few common attributes, such as aridity or mean precipitation.
@@ -56,6 +59,7 @@ CAMELS_BR_data = load('CAMELS_Matlab/Data/CAMELS_BR_data.mat');
 % split up the groundwater signature calculations by country. We can then 
 % calculate the McMillan groundwater set.
 % This might take a while...
+fprintf('Calculating groundwater signatures...\n')
 isUS = (attributes.country == 1); % US (start 1 October)
 CAMELS_signatures_Groundwater_US = calc_McMillan_Groundwater(...
     Q_mat(isUS), t_mat(isUS), P_mat(isUS), PET_mat(isUS), 'start_water_year', 10);
@@ -75,17 +79,19 @@ CAMELS_signatures_Groundwater = CatStructFields(1,...
 
 % We then calculate the McMillan overland flow set. 
 % This might take a while...
+fprintf('Calculating overland flow signatures...\n')
 CAMELS_signatures_OverlandFlow = calc_McMillan_OverlandFlow(...
-    Q_mat, t_mat, P_mat, PET_mat);
+    Q_mat, t_mat, P_mat);
 
-% We can save the results as mat files which can be easily loaded. 
+% We can save the results as mat files which can be easily loaded.
+fprintf('Saving results...\n')
 save(strcat(results_path,'CAMELS_signatures_Groundwater.mat'),...
     '-struct','CAMELS_signatures_Groundwater')
 save(strcat(results_path,'CAMELS_signatures_OverlandFlow.mat'),...
     '-struct','CAMELS_signatures_OverlandFlow')
 
 % Alternatively, we can save the results as txt file.
-% writetable(struct2table(CAMELS_US_signatures_Groundwater),...
-%     strcat(results_path,'CAMELS_US_signatures_Groundwater.txt'))
-% writetable(struct2table(CAMELS_US_signatures_Groundwater),...
-%     strcat(results_path,'CAMELS_US_signatures_OverlandFlow.txt'))
+writetable(struct2table(CAMELS_signatures_OverlandFlow),...
+    strcat(results_path,'CAMELS_signatures_Groundwater.txt'))
+writetable(struct2table(CAMELS_signatures_OverlandFlow),...
+    strcat(results_path,'CAMELS_US_signatures_OverlandFlow.txt'))
