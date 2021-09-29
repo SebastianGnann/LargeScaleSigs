@@ -13,8 +13,8 @@ function CZO_overland_flow_quantile_mat = ...
 %    OUTPUT
 %    ...
 
-CZO_overland_flow_quantile_mat = NaN(10,5);
-for i = 1:10
+CZO_overland_flow_quantile_mat = NaN(size(OverlandFlow_matrix,2),5);
+for i = 1:size(OverlandFlow_matrix,2)
     tmp = OverlandFlow_matrix(:,i);
     for j = 1:4
         country_tmp = tmp(attributes.country==j);

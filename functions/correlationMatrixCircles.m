@@ -26,9 +26,9 @@ yl = repmat(n+1:-1:1, 2, 1);
 % line(xl, yl, 'color', 'k') % horizontal lines
 % line(yl, xl, 'color', 'k') % vertical lines
 % show labels
-text(1:n, (n:-1:1) + 0.5, labels, 'HorizontalAlignment', 'right')
+text(1:n, (n:-1:1) + 0.5, labels, 'HorizontalAlignment', 'right', 'Interpreter', 'none')
 text((1:n) + 0.5, repmat(n + 1, n, 1) + 0.5, labels, ...
-    'HorizontalAlignment', 'right', 'Rotation', 315)
+    'HorizontalAlignment', 'right', 'Rotation', 315, 'Interpreter', 'none')
 h = gca;
 c = colorbar(h);
 h.Visible = 'off';

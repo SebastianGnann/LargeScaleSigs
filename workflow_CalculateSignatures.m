@@ -12,10 +12,6 @@
 %   (https://github.com/TOSSHtoolbox/TOSSH). 
 %
 %   Note that this script requires sufficient RAM.
-%
-%   Copyright (C) 2021
-%   This software is distributed under the GNU Public License Version 3.
-%   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
 
 %% load useful packages 
 

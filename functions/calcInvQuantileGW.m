@@ -13,8 +13,8 @@ function CZO_groundwater_quantile_mat = ...
 %    OUTPUT
 %    ...
 
-CZO_groundwater_quantile_mat = NaN(16,5);
-for i = 1:16
+CZO_groundwater_quantile_mat = NaN(size(Groundwater_matrix,2),5);
+for i = 1:size(Groundwater_matrix,2)
     tmp = Groundwater_matrix(:,i);
     for j = 1:4
         country_tmp = tmp(attributes.country==j);
