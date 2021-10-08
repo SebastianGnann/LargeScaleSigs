@@ -11,7 +11,7 @@ function CZO_groundwater_quantile_mat = ...
 %    Groundwater_matrix)
 %
 %    OUTPUT
-%    ...
+%    CZO_groundwater_quantile_mat: matrix with inverse quantiles 
 
 CZO_groundwater_quantile_mat = NaN(size(Groundwater_matrix,2),5);
 for i = 1:size(Groundwater_matrix,2)

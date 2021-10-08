@@ -11,7 +11,7 @@ function CZO_overland_flow_quantile_mat = ...
 %    as OverlandFlow_matrix)
 %
 %    OUTPUT
-%    ...
+%    CZO_overland_flow_quantile_mat: matrix with inverse quantiles 
 
 CZO_overland_flow_quantile_mat = NaN(size(OverlandFlow_matrix,2),5);
 for i = 1:size(OverlandFlow_matrix,2)

@@ -6,12 +6,11 @@ function [t_mat, Q_mat, P_mat, PET_mat, attributes] = combineDataCAMELS(...
 %   CAMELS_data_xx: CAMELS data struct file
 %
 %   OUTPUT
-%   t_mat: time cell
-%   ...
-%
-%   Copyright (C) 2021
-%   This software is distributed under the GNU Public License Version 3.
-%   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
+%   t_mat: time matrix
+%   Q_mat: Q matrix
+%   P_mat: P matrix
+%   PET_mat: PET matrix
+%   attributes: cell with various attributes
 
 % To use TOSSH calculation functions, we need to create cell arrays
 % containing the time series. We use cell arrays since some time series

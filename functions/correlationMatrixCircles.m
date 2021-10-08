@@ -1,6 +1,6 @@
 function correlationMatrixCircles(rho,signature_names,set,fig_path)
 % https://de.mathworks.com/matlabcentral/answers/699755-fancy-correlation-plots-in-matlab
-% sample correlation matrix
+% creates plot showing correlation matrix
 
 if strcmp(set,'gw')
     fig = figure('pos',[100 100 560 560]);

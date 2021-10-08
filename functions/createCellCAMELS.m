@@ -9,11 +9,11 @@ function [t_mat, Q_mat, P_mat, PET_mat, flow_perc_complete] = ...
 %
 %   OUTPUT
 %   t_mat: time matrix
-%   ...
-%
-%   Copyright (C) 2021
-%   This software is distributed under the GNU Public License Version 3.
-%   See <https://www.gnu.org/licenses/gpl-3.0.en.html> for details.
+%   Q_mat: Q matrix
+%   P_mat: P matrix
+%   PET_mat: PET matrix
+%   flow_perc_complete: completeness of record 
+
 
 % check input parameters
 if nargin < 1
