@@ -159,3 +159,45 @@ xlabel('TotalStorage [mm]')
 caxis([0 0.1])
 
 saveFig(fig,strcat('storage_fraction'),fig_path,'-dpng')
+
+
+%% example recessions
+% show example catchment in Brazil
+% plot time series
+i = 900;
+t = t_mat{i};
+P = P_mat{i};
+PET = PET_mat{i};
+Q = Q_mat{i};
+
+% plot Q and P data
+fig1 = figure('Name',num2str(attributes.gauge_id(i)),'NumberTitle','off',...
+    'pos',[100 100 500 200],...
+    'Renderer','painters'); % OpenGL leads to strange plots
+
+yyaxis left
+hold on
+p1 = plot(t,Q,'-','color',0*[1 1 1],'linewidth',2);
+xlabel('Date')
+xlim([datetime(1994,09,01) datetime(1997,09,01)])
+ylabel('Q [mm/d]')
+
+yyaxis right
+p2 = plot(t,movmean(P,1),'-','color',.5*[1 1 1]);
+% p3 = plot(t,movmean(PET,1),'-','color',.8*[1 1 1]);
+ylabel('P [mm/d]')
+set(gca,'Ydir','reverse')
+
+ax = gca;
+ax.YAxis(1).Color = 'k';
+ax.YAxis(2).Color = .5*[1 1 1];
+p1.ZData = ones(size(p1.XData));
+p2.ZData = zeros(size(p2.XData));
+set(ax, 'SortMethod', 'depth')
+
+% plot signatures (recessions)
+sig_RecessionAnalysis(Q,t,'fit_individual',true,'plot_results',true,'eps',0.001*median(Q,'omitnan'));
+sig_BaseflowRecessionK(Q,t,'eps',0.001*median(Q,'omitnan'),'plot_results',true);
+
+
+%% TODO: Add plots from SI
