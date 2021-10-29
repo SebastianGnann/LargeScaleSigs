@@ -3,9 +3,9 @@ function correlationMatrixCircles(rho,signature_names,set,fig_path)
 % creates plot showing correlation matrix
 
 if strcmp(set,'gw')
-    fig = figure('pos',[100 100 560 560]);
+    fig = figure('pos',[100 100 560 672]);
 elseif strcmp(set,'of')
-    fig = figure('pos',[100 100 360 360]);
+    fig = figure('pos',[100 100 320 384]);
 else
     error('Set not defined.')
 end
@@ -26,9 +26,9 @@ yl = repmat(n+1:-1:1, 2, 1);
 % line(xl, yl, 'color', 'k') % horizontal lines
 % line(yl, xl, 'color', 'k') % vertical lines
 % show labels
-text(1:n, (n:-1:1) + 0.5, labels, 'HorizontalAlignment', 'right', 'Interpreter', 'none')
+text(1:n, (n:-1:1) + 0.5, labels, 'HorizontalAlignment', 'right','Interpreter','None')
 text((1:n) + 0.5, repmat(n + 1, n, 1) + 0.5, labels, ...
-    'HorizontalAlignment', 'right', 'Rotation', 315, 'Interpreter', 'none')
+    'HorizontalAlignment', 'right', 'Rotation', 315,'Interpreter','None')
 h = gca;
 c = colorbar(h);
 h.Visible = 'off';

@@ -29,11 +29,11 @@ end
 
 %% add paths
 % working directory (important so that functions herein are called)
-mydir = 'Signatures_large_scales';
+mydir = 'LargeScaleSigs';
 addpath(genpath(mydir));
 % figure path
-fig_path = 'Signatures_large_scales/results/images';
-results_path = 'Signatures_large_scales/results/';
+fig_path = 'LargeScaleSigs/results/images';
+results_path = 'LargeScaleSigs/results/';
 
 %% load catchment data
 CAMELS_US_data = load('CAMELS_Matlab/Data/CAMELS_US_data.mat');
