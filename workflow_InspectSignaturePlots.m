@@ -63,7 +63,12 @@ end
 %% examples of signature aridity relationships that differ between countries
 fig = figure('pos',[100 100 900 250]);
 
-colour_mat = flip(parula(4));%[brewermap(4,'Spectral')]; %.8*ones(4,1)
+colour_mat = [
+    169 90 161;
+    245 121 58;
+    133 192 249;
+    15 32 128]./255;
+% colour_mat = flip(parula(4));%[brewermap(4,'Spectral')]; %.8*ones(4,1)
 
 subplot(1,3,1); hold on
 scatter(attributes.aridity(attributes.country==1 & attributes.frac_snow<0.3),...
@@ -128,7 +133,7 @@ saveFig(fig,strcat('aridity_examples'),fig_path,'-dpng')
 %% compare IE and SE effect in UK
 fig = figure('pos',[100 100 300 250]); hold on
 colour_mat = [brewermap(9,'Set1')]; %.8*ones(4,1)
-nr = 1;
+nr = 2;
 scatter(attributes.high_prec_freq(attributes.country==nr & attributes.frac_snow<0.3),...
     CAMELS_signatures_OverlandFlow.SE_effect(attributes.country==nr & attributes.frac_snow<0.3),...
     'markeredgecolor',colour_mat(4,:))
@@ -172,18 +177,18 @@ Q = Q_mat{i};
 
 % plot Q and P data
 fig1 = figure('Name',num2str(attributes.gauge_id(i)),'NumberTitle','off',...
-    'pos',[100 100 500 200],...
+    'pos',[100 100 500 220],...
     'Renderer','painters'); % OpenGL leads to strange plots
 
 yyaxis left
 hold on
-p1 = plot(t,Q,'-','color',0*[1 1 1],'linewidth',2);
+p1 = plot(t,Q,'-','color',0*[1 1 1],'linewidth',1.0);
 xlabel('Date')
 xlim([datetime(1994,09,01) datetime(1997,09,01)])
 ylabel('Q [mm/d]')
 
 yyaxis right
-p2 = plot(t,movmean(P,1),'-','color',.5*[1 1 1]);
+p2 = plot(t,movmean(P,1),'-','color',.6*[1 1 1],'linewidth',0.5);
 % p3 = plot(t,movmean(PET,1),'-','color',.8*[1 1 1]);
 ylabel('P [mm/d]')
 set(gca,'Ydir','reverse')
@@ -197,7 +202,15 @@ set(ax, 'SortMethod', 'depth')
 
 % plot signatures (recessions)
 sig_RecessionAnalysis(Q,t,'fit_individual',true,'plot_results',true,'eps',0.001*median(Q,'omitnan'));
-sig_BaseflowRecessionK(Q,t,'eps',0.001*median(Q,'omitnan'),'plot_results',true);
+xlim([10^-1 10^1]); ylim([10^-3 10^1])
+xlabel('Q [mm/day]'); ylabel('dQ/dt [mm/day^2]'); title('')
+fig = gcf;
+fig.Position = [100 100 250 220]; 
 
+sig_BaseflowRecessionK(Q,t,'eps',0.001*median(Q,'omitnan'),'plot_results',true);
+xlabel('Relative time [days]'); ylabel('Flow [mm/day]'); title('')
+fig = gcf;
+box off
+fig.Position = [100 100 500 220]; 
 
 %% TODO: Add plots from SI

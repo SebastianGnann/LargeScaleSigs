@@ -168,16 +168,21 @@ signature_names_Groundwater = {...
 % We define the ranges to obtain nicer plots.
 ranges = [0 1; 0 1; 0 4; 0 1.2; ...
     0 1500; 0 1500; 0 6; 0 600; ...
-    1 5; 0 100; 0 3; 0 1; ...
-    0 0.5; 0 1; 0 1; 0 1;...
-    0 1];
-colour_mat = [flip(parula(4)) .8*ones(4,1)]; %brewermap(4,'Spectral')
+    0 6; 0 60; 0 3; 0 1; ...
+    0 0.6; 0 1.5; 0 .6; 0 1;...
+    0 1.];
+colour_mat = [
+    169 90 161;
+    245 121 58;
+    133 192 249;
+    15 32 128]./255;
+colour_mat = [colour_mat 1*ones(4,1)]; %brewermap(4,'Spectral')
 fig = figure('pos',[10 10 700 700]);
 groundwater_quantile_mat = NaN(17,5);
 groundwater_quantile_mat_country = NaN(17,5,4);
 j_vec = [1 4 2 3]; % to change plotting order of countries
 for i = 1:17%19
-    subplot(4,5,i)
+    subplot(6,3,i)
     hold on
     tmp = Groundwater_matrix(:,i);
     [f,xi] = ksdensity(tmp);
@@ -196,9 +201,9 @@ for i = 1:17%19
     set(gca,'YTickLabel',[]);
 end
 % leg = legend('US','GB','AUS','BR','box','off');
-leg = legend('US','BR','GB','AUS','box','off');
+% leg = legend('US','BR','GB','AUS','box','off');
 % leg.Position = [0.837 0.157 0.101 0.113];
-leg.Position = [0.733 0.123 0.134 0.081];
+% leg.Position = [0.733 0.123 0.134 0.081];
 saveFig(fig,strcat('distr_gw'),fig_path,'-dpng')
 
 % signature distributions overland flow
@@ -242,9 +247,9 @@ for i = 1:9
     set(gca,'YTickLabel',[]);
 end
 % leg = legend('US','GB','AUS','BR','box','off');
-leg = legend('US','BR','GB','AUS','box','off');
+% leg = legend('US','BR','GB','AUS','box','off');
 % leg.Position = [.55 .17 .10 .11];
-leg.Position = [0.834 0.184 0.152 0.162];
+% leg.Position = [0.834 0.184 0.152 0.162];
 saveFig(fig,strcat('distr_of'),fig_path,'-dpng')
 
 %% signature variations with climate aridity
@@ -272,7 +277,11 @@ signature_names_Groundwater = {...
     'EventRR_TotalRR_ratio',...
     'VariabilityIndex',...
     };
-colour_mat = flip(parula(4));%brewermap(4,'Spectral');
+colour_mat = [
+    169 90 161;
+    245 121 58;
+    133 192 249;
+    15 32 128]./255;%flip(parula(4));%brewermap(4,'Spectral');
 fig = figure('pos',[100 100 800 600]);
 var = attributes.aridity;
 groundwater_aridity_rho_s = NaN(19,5); % 1-4 countries, 5 total
@@ -286,7 +295,7 @@ for i = 1:17
         j = j_vec(k);
         tmp_country = tmp(attributes.country==j);
         scatter(var(attributes.country==j),tmp(attributes.country==j),5,...
-            'markeredgecolor',colour_mat(j,:),'markeredgealpha',.7)
+            'markeredgecolor',colour_mat(j,:),'markeredgealpha',1)
         groundwater_aridity_rho_s(i,j) = corr(var(attributes.country==j),tmp(attributes.country==j),'type','Spearman','rows','complete');
     end
     groundwater_aridity_rho_s(i,5) = corr(var,tmp,'type','Spearman','rows','complete');
@@ -317,7 +326,11 @@ signature_names_OverlandFlow = {...
     'Storage_thresh_signif',...
     'Storage_thresh',...
     };
-colour_mat = parula(4);%brewermap(4,'Spectral');
+colour_mat = [
+    169 90 161;
+    245 121 58;
+    133 192 249;
+    15 32 128]./255;;%brewermap(4,'Spectral');
 fig = figure('pos',[100 100 800 300]);
 % var = attributes.aridity;
 overland_flow_aridity_rho_s = NaN(10,5); % 1-4 countries, 5 total
@@ -330,7 +343,7 @@ for i = 1:9
         j = j_vec(k);
         tmp_country = tmp(attributes.country==j);
         scatter(var(attributes.country==j),tmp(attributes.country==j),5,...
-            'markeredgecolor',colour_mat(j,:),'markeredgealpha',.7)
+            'markeredgecolor',colour_mat(j,:),'markeredgealpha',1)
         overland_flow_aridity_rho_s(i,j) = corr(var(attributes.country==j),tmp(attributes.country==j),'type','Spearman','rows','complete');
     end
     overland_flow_aridity_rho_s(i,5) = corr(var,tmp,'type','Spearman','rows','complete');
