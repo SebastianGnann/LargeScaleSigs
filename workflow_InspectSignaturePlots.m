@@ -130,20 +130,6 @@ title('(c)')
 
 saveFig(fig,strcat('aridity_examples'),fig_path,'-dpng')
 
-%% compare IE and SE effect in UK
-fig = figure('pos',[100 100 300 250]); hold on
-colour_mat = [brewermap(9,'Set1')]; %.8*ones(4,1)
-nr = 2;
-scatter(attributes.high_prec_freq(attributes.country==nr & attributes.frac_snow<0.3),...
-    CAMELS_signatures_OverlandFlow.SE_effect(attributes.country==nr & attributes.frac_snow<0.3),...
-    'markeredgecolor',colour_mat(4,:))
-scatter(attributes.high_prec_freq(attributes.country==nr & attributes.frac_snow<0.3),...
-    CAMELS_signatures_OverlandFlow.IE_effect(attributes.country==nr & attributes.frac_snow<0.3),...
-    'markeredgecolor',colour_mat(5,:))
-xlabel('PET/P [-]'); ylabel('SE/IE Effect [-]')
-legend('SE','IE','location','best')
-hold on
-
 %% storage fraction and its components
 fig = figure('pos',[100 100 900 250]);
 subplot(1,3,1)
@@ -212,5 +198,3 @@ xlabel('Relative time [days]'); ylabel('Flow [mm/day]'); title('')
 fig = gcf;
 box off
 fig.Position = [100 100 500 220]; 
-
-%% TODO: Add plots from SI

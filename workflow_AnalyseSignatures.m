@@ -42,7 +42,7 @@ if ~results_loaded
     % Note that the start of the water year differs for some of the countries.
     [t_mat, Q_mat, P_mat, PET_mat, attributes] = combineDataCAMELS(...
         CAMELS_US_data, CAMELS_GB_data, CAMELS_AUS_data, CAMELS_BR_data);
-
+    
     %% load signature results
     % We load the results calculated with the other script.
     CAMELS_signatures_Groundwater = ...
@@ -59,7 +59,7 @@ end
 tmp = CAMELS_signatures_Groundwater.RecessionParameters(:,3);
 tmp(~isfinite(tmp)) = NaN;
 tmp(tmp>100) = NaN;
-    
+
 Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.TotalRR,...
     CAMELS_signatures_Groundwater.EventRR,...
@@ -122,7 +122,7 @@ OverlandFlow_matrix = [...
     ];
 
 % We can remove snowy catchments as snow might impact signature values.
-% OverlandFlow_matrix(attributes.frac_snow>0.3,:) = NaN; 
+% OverlandFlow_matrix(attributes.frac_snow>0.3,:) = NaN;
 
 signature_names_OverlandFlow = {...
     'IE_effect',...
@@ -150,7 +150,7 @@ signature_names_Groundwater = {...
     'EventRR [-]',...
     'RR_Seasonality [-]',...
     'StorageFraction [-]',...
-    'ActiveStorage [m]',...
+    'ActiveStorage [mm]',...
     'TotalStorage [mm]',...
     'Recession_a_Seasonality [-]',...
     'AverageStorage [mm]',...
@@ -168,7 +168,7 @@ signature_names_Groundwater = {...
 % We define the ranges to obtain nicer plots.
 ranges = [0 1; 0 1; 0 4; 0 1.2; ...
     0 1500; 0 1500; 0 6; 0 600; ...
-    0 6; 0 60; 0 3; 0 1; ...
+    0 6; 0 60; 0.5 3.5; 0 1; ...
     0 0.6; 0 1.5; 0 .6; 0 1;...
     0 1.];
 colour_mat = [
@@ -189,12 +189,29 @@ for i = 1:17%19
     %     plot(xi,f,'color',[0.5 0.5 0.5],'linewidth',2)
     %     I = calcMoransI(attributes.gauge_lat,attributes.gauge_lon,tmp);
     groundwater_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
-    for k = 1:4
-        j = j_vec(k);
-        [f,xi] = ksdensity(tmp(attributes.country==j));
-        plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-        groundwater_quantile_mat_country(i,:,j) = ...
-            quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+    if i == 11
+        f = NaN(3,4);
+        xi = NaN(3,4);
+        for k = 1:4
+            j = j_vec(k);
+            [f(:,k),xi(:,k)] = ksdensity(tmp(attributes.country==j), [1 2 3]);
+            groundwater_quantile_mat_country(i,:,j) = ...
+                quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+        end
+%         [f,xi] = ksdensity(tmp(attributes.country==j), [1 2 3]); %,'linestyle','none','marker','.'
+        b = bar(f);
+        for k = 1:4
+            b(k).FaceColor = colour_mat(k,1:3);
+            b(k).EdgeColor = 'none';
+        end
+    else
+        for k = 1:4
+            j = j_vec(k);
+            [f,xi] = ksdensity(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 100));
+            plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
+            groundwater_quantile_mat_country(i,:,j) = ...
+                quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+        end
     end
     xlabel(signature_names_Groundwater{i}, 'Interpreter', 'none') %, 'Interpreter', 'none'
     xlim(ranges(i,:))
@@ -206,18 +223,18 @@ end
 % leg.Position = [0.733 0.123 0.134 0.081];
 saveFig(fig,strcat('distr_gw'),fig_path,'-dpng')
 
-% signature distributions overland flow
+%% signature distributions overland flow
 % We update the name matrix and add units for the plots.
 signature_names_OverlandFlow = {...
-    'IE effect [-]',...
-    'SE effect [-]',...
-    'IE signif [-]',...
-    'IE thresh [mm/d]',...
-    'SE signif [-]',...
-    'SE thresh [mm]',...
-    'SE slope [mm/mm]',...
-    'Storage signif [-]',...
-    'Storage thresh [mm]',...
+    'IE_effect [-]',...
+    'SE_effect [-]',...
+    'IE_thresh_signif [-]',...
+    'SE_thresh_signif [-]',...
+    'IE_thresh [mm/d]',...
+    'SE_thresh [mm]' ,...
+    'SE_slope [mm/mm]',...
+    'Storage_thresh_signif [-]',...
+    'Storage_thresh [mm]',...
     };
 
 % We define the ranges to obtain nicer plots.
@@ -228,8 +245,8 @@ ranges = [-0.4 0.8; 0 1; 0 1; 0 1; ...
     0 60; 0 150; 0 1; 0 1; ...
     0 150];
 fig = figure('pos',[10 10 700 350]);
-overland_flow_quantile_mat = NaN(10,5);
-overland_flow_quantile_mat_country = NaN(10,5,4);
+overland_flow_quantile_mat = NaN(9,5);
+overland_flow_quantile_mat_country = NaN(9,5,4);
 for i = 1:9
     subplot(3,3,i)
     hold on
@@ -237,10 +254,17 @@ for i = 1:9
     overland_flow_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
     for k = 1:4
         j = j_vec(k);
-        [f,xi] = ksdensity(tmp(attributes.country==j));
+        [f,xi] = ksdensity(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 100));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
+%         histogram(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 20),...
+%             'facecolor',colour_mat(j,1:3),'edgecolor','none')
         overland_flow_quantile_mat_country(i,:,j) = ...
             quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+    end
+    if i == 3 || i == 4 || i == 8
+%         ylim([0 10])
+    else
+%         set(gca,'xscale','lin')
     end
     xlabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
     xlim(ranges(i,:))
@@ -284,7 +308,7 @@ colour_mat = [
     15 32 128]./255;%flip(parula(4));%brewermap(4,'Spectral');
 fig = figure('pos',[100 100 800 600]);
 var = attributes.aridity;
-groundwater_aridity_rho_s = NaN(19,5); % 1-4 countries, 5 total
+groundwater_aridity_rho_s = NaN(17,5); % 1-4 countries, 5 total
 j_vec = [1 4 2 3]; % to change plotting order of countries
 for i = 1:17
     subplot(4,5,i)
@@ -302,9 +326,9 @@ for i = 1:17
     title(strcat('\rho_s =','{ }',num2str(round(groundwater_aridity_rho_s(i,5),2))))
     ylim([quant(1) quant(5)])
     ylabel(signature_names_Groundwater{i}, 'Interpreter', 'none')
-%     xlabel('Snow frac [-]')
-%     xlabel('P seasonality')
-%     xlim([-1.5 1.5])
+    %     xlabel('Snow frac [-]')
+    %     xlabel('P seasonality')
+    %     xlim([-1.5 1.5])
     xlabel('PET/P')
     xlim([0.1 10])
     set(gca,'xscale','log')
@@ -330,10 +354,10 @@ colour_mat = [
     169 90 161;
     245 121 58;
     133 192 249;
-    15 32 128]./255;;%brewermap(4,'Spectral');
+    15 32 128]./255;%brewermap(4,'Spectral');
 fig = figure('pos',[100 100 800 300]);
 % var = attributes.aridity;
-overland_flow_aridity_rho_s = NaN(10,5); % 1-4 countries, 5 total
+overland_flow_aridity_rho_s = NaN(9,5); % 1-4 countries, 5 total
 for i = 1:9
     subplot(2,5,i)
     hold on
@@ -350,10 +374,10 @@ for i = 1:9
     title(strcat('\rho_s =','{ }',num2str(round(overland_flow_aridity_rho_s(i,5),2))))
     ylim([quant(1) quant(5)])
     ylabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
-%     xlabel('Snow frac [-]')
-%     xlabel('P seasonality')
-%     xlim([-1.5 1.5])
-    xlabel('PET/P')    
+    %     xlabel('Snow frac [-]')
+    %     xlabel('P seasonality')
+    %     xlim([-1.5 1.5])
+    xlabel('PET/P')
     xlim([0.1 10])
     set(gca,'xscale','log')
 end
@@ -365,25 +389,25 @@ saveFig(fig,strcat('aridity_of'),fig_path,'-dpng')
 %% return quantile value for a given signature
 % groundwater
 Groundwater_CZO = [
-0.2203
-0.1063
-0.5644
-1
-198.4451
-198.4451
-2.0059
-82.3943
-1
-2.7287
-21.5376
-3
-0.4045
-0.1208
-0.4836
-0.1351
--0.3638
-0.4824
-0.2055
+    0.2203
+    0.1063
+    0.5644
+    1
+    198.4451
+    198.4451
+    2.0059
+    82.3943
+    1
+    2.7287
+    21.5376
+    3
+    0.4045
+    0.1208
+    0.4836
+    0.1351
+    -0.3638
+    0.4824
+    0.2055
     ];
 
 CZO_groundwater_quantile_mat = ...
@@ -392,16 +416,16 @@ round(CZO_groundwater_quantile_mat(:,1).*100)
 %%
 % overland flow
 OverlandFlow_CZO = [
-0.2836
-0.7539
-0
-0
-21.8137
-52.5992
-0.5737
-0
-78.2344
-0
+    0.2836
+    0.7539
+    0
+    0
+    21.8137
+    52.5992
+    0.5737
+    0
+    78.2344
+    0
     ];
 CZO_overland_flow_quantile_mat = ...
     calcInvQuantileOF(OverlandFlow_matrix,attributes,OverlandFlow_CZO);
