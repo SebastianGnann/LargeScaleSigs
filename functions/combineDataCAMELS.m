@@ -90,6 +90,8 @@ rmv_BR(CAMELS_BR_data.consumptive_use_perc>5) = true;
 rmv_BR(CAMELS_BR_data.regulation_degree>10) = true;
 % combine vectors
 rmv = [rmv_US; rmv_GB; rmv_AUS; rmv_BR];
+% remove snowy catchments
+rmv(attributes.frac_snow>0.3) = true;
 
 t_mat(rmv) = [];
 Q_mat(rmv) = [];

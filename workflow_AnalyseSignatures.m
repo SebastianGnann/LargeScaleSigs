@@ -56,10 +56,6 @@ end
 % We create a matrix with all groundwater signatures, calculate their
 % correlation with each other, and plot the results.
 
-tmp = CAMELS_signatures_Groundwater.RecessionParameters(:,3);
-tmp(~isfinite(tmp)) = NaN;
-tmp(tmp>100) = NaN;
-
 Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.TotalRR,...
     CAMELS_signatures_Groundwater.EventRR,...
@@ -79,9 +75,6 @@ Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.EventRR_TotalRR_ratio,...
     CAMELS_signatures_Groundwater.VariabilityIndex,...
     ];
-
-% We can remove snowy catchments as snow might impact signature values.
-% Groundwater_matrix(attributes.frac_snow>0.3,:) = NaN;
 
 signature_names_Groundwater = {...
     'TotalRR',...
@@ -120,9 +113,6 @@ OverlandFlow_matrix = [...
     CAMELS_signatures_OverlandFlow.Storage_thresh_signif,...
     CAMELS_signatures_OverlandFlow.Storage_thresh,...
     ];
-
-% We can remove snowy catchments as snow might impact signature values.
-% OverlandFlow_matrix(attributes.frac_snow>0.3,:) = NaN;
 
 signature_names_OverlandFlow = {...
     'IE_effect',...
@@ -177,12 +167,12 @@ colour_mat = [
     133 192 249;
     15 32 128]./255;
 colour_mat = [colour_mat 1*ones(4,1)]; %brewermap(4,'Spectral')
-fig = figure('pos',[10 10 700 700]);
+fig = figure('pos',[10 10 800 500]);
 groundwater_quantile_mat = NaN(17,5);
 groundwater_quantile_mat_country = NaN(17,5,4);
 j_vec = [1 4 2 3]; % to change plotting order of countries
 for i = 1:17%19
-    subplot(6,3,i)
+    subplot(5,4,i+3)
     hold on
     tmp = Groundwater_matrix(:,i);
     [f,xi] = ksdensity(tmp);
@@ -223,7 +213,7 @@ end
 % leg.Position = [0.733 0.123 0.134 0.081];
 saveFig(fig,strcat('distr_gw'),fig_path,'-dpng')
 
-%% signature distributions overland flow
+% signature distributions overland flow
 % We update the name matrix and add units for the plots.
 signature_names_OverlandFlow = {...
     'IE_effect [-]',...
@@ -244,11 +234,11 @@ signature_names_OverlandFlow = {...
 ranges = [-0.4 0.8; 0 1; 0 1; 0 1; ...
     0 60; 0 150; 0 1; 0 1; ...
     0 150];
-fig = figure('pos',[10 10 700 350]);
+fig = figure('pos',[10 10 800 300]);
 overland_flow_quantile_mat = NaN(9,5);
 overland_flow_quantile_mat_country = NaN(9,5,4);
 for i = 1:9
-    subplot(3,3,i)
+    subplot(3,4,i+3)
     hold on
     tmp = OverlandFlow_matrix(:,i);
     overland_flow_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
@@ -386,47 +376,3 @@ leg = legend('US','BR','GB','AUS','box','off');
 leg.Position = [0.787 0.189 0.1 0.189];
 saveFig(fig,strcat('aridity_of'),fig_path,'-dpng')
 
-%% return quantile value for a given signature
-% groundwater
-Groundwater_CZO = [
-    0.2203
-    0.1063
-    0.5644
-    1
-    198.4451
-    198.4451
-    2.0059
-    82.3943
-    1
-    2.7287
-    21.5376
-    3
-    0.4045
-    0.1208
-    0.4836
-    0.1351
-    -0.3638
-    0.4824
-    0.2055
-    ];
-
-CZO_groundwater_quantile_mat = ...
-    calcInvQuantileGW(Groundwater_matrix,attributes,Groundwater_CZO);
-round(CZO_groundwater_quantile_mat(:,1).*100)
-%%
-% overland flow
-OverlandFlow_CZO = [
-    0.2836
-    0.7539
-    0
-    0
-    21.8137
-    52.5992
-    0.5737
-    0
-    78.2344
-    0
-    ];
-CZO_overland_flow_quantile_mat = ...
-    calcInvQuantileOF(OverlandFlow_matrix,attributes,OverlandFlow_CZO);
-round(CZO_overland_flow_quantile_mat(:,1).*100)
