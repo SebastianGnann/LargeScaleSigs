@@ -1,9 +1,6 @@
 %% workflow_InspectSignaturePlots
 %
-%   This script shows how to analyse signatures calculated with the TOSSH
-%   toolbox results:
-%   - we inspect plots to see whether the signature calculations are
-%   meaningful.
+%   This script shows how to plot maps for different signatures.
 
 %% load useful packages
 % ...
@@ -60,8 +57,8 @@ if ~results_loaded
         load(strcat(results_path,'CAMELS_signatures_OverlandFlow.mat'));
 end
 
-%% plot maps
-%% aridity
+%% Plot maps
+%% Aridity
 chosen_attribute = attributes.aridity;
 c_limits = [0 2];
 % chosen_attribute(attributes.frac_snow>0.3) = NaN;

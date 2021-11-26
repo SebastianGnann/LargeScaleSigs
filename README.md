@@ -5,6 +5,7 @@ This repository contains code for analysis and visualisation of hydrological sig
 - workflow_AnalyseSignatures.m analyses the signatures and plots the results.
 - workflow_InspectSignaturePlots.m inspects signature plots for individual countries or watersheds to check whether the signature calculations are meaningful.
 - workflow_CalculateQuantiles.m calculates inverse quantiles of CZO signature values given the CAMELS signatures.
+- workflow_PlotMaps.m plots maps of aridity and various signatures for the CAMELS countries.
 - workflow_CZO_TOSSH.m calculates the signatures for the critical zone observatories (CZOs).
 
 Large_Scale_Signatures_CZO_Analysis.xlsx contains signature values, percentiles, descriptions of each process and key references for each CZO watershed.

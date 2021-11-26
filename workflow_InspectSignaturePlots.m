@@ -1,9 +1,11 @@
 %% workflow_InspectSignaturePlots
 %
-%   This script shows how to analyse signatures calculated with the TOSSH
-%   toolbox results:
-%   - we inspect plots to see whether the signature calculations are
-%   meaningful.
+%   This script inspects different aspects of the signatures calculated
+%   with the TOSSH toolbox:
+%   - it plots selected signature-aridity relationships for different 
+%   countries.
+%   - it plots the storage fraction signature and its components,
+%   - it plots recession signatures in a Brazilean catchment.
 
 %% load useful packages
 % ...
@@ -60,7 +62,8 @@ if ~results_loaded
         load(strcat(results_path,'CAMELS_signatures_OverlandFlow.mat'));
 end
 
-%% examples of signature aridity relationships that differ between countries
+%% Examples of signature aridity relationships that differ between 
+% countries
 fig = figure('pos',[100 100 900 250]);
 
 colour_mat = [
@@ -68,7 +71,6 @@ colour_mat = [
     245 121 58;
     133 192 249;
     15 32 128]./255;
-% colour_mat = flip(parula(4));%[brewermap(4,'Spectral')]; %.8*ones(4,1)
 
 subplot(1,3,1); hold on
 scatter(attributes.aridity(attributes.country==1 & attributes.frac_snow<0.3),...
@@ -85,7 +87,6 @@ scatter(attributes.aridity(attributes.country==3 & attributes.frac_snow<0.3),...
      'markeredgecolor',colour_mat(3,:),'markeredgealpha',1)
 xlabel('PET/P [-]')
 ylabel('TotalRR [-]')
-% legend('US','GB','AUS','BR')
 set(gca,'xscale','log')
 xlim([0.1 10])
 ylim([0 1])
@@ -109,7 +110,6 @@ scatter(attributes.aridity(attributes.country==3 & attributes.frac_snow<0.3),...
 xlabel('PET/P [-]')
 ylabel('IE_effect [-]','Interpreter','None')
 set(gca,'xscale','log')
-% set(gca,'yscale','log')
 xlim([0.1 10])
 ylim([-0.6 0.8])
 title('(b)')
@@ -130,7 +130,7 @@ title('(c)')
 
 saveFig(fig,strcat('aridity_examples'),fig_path,'-dpng')
 
-%% storage fraction and its components
+%% Storage fraction and its components
 fig = figure('pos',[100 100 900 250]);
 subplot(1,3,1)
 scatter(CAMELS_signatures_Groundwater.StorageFraction(:,1),...
@@ -152,10 +152,10 @@ caxis([0 0.1])
 saveFig(fig,strcat('storage_fraction'),fig_path,'-dpng')
 
 
-%% example recessions
+%% Example recessions
 % show example catchment in Brazil
 % plot time series
-i = 900;
+i = 778;
 t = t_mat{i};
 P = P_mat{i};
 PET = PET_mat{i};

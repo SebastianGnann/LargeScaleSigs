@@ -2,12 +2,11 @@
 %
 %   This script shows how to analyse signatures calculated with the TOSSH
 %   toolbox:
-%   - correlation matrices are plotted to show how the signatures of each
-%   set (groundwater and overland flow set) are correlated,
-%   - signature distributions (smoothed histograms) are plotted for each
-%   country and different quantiles are calculated,
-%   - scatter plots showing how the signatures vary with aridity are
-%   plotted and the correlations calculated.
+%   - it plots correlation matrices to show how the signatures of each set
+%   (groundwater and overland flow set) are correlated,
+%   - it plots signature distributions (smoothed histograms)for each 
+%   country and calculates different quantiles,
+%   - it plots the signatures vs aridity and calculates their correlation.
 
 %% load useful packages
 if (exist('BrewerMap') == 7)
@@ -52,10 +51,10 @@ if ~results_loaded
 end
 
 %% calculate and plot correlation matrices
-% correlation matrix groundwater
 % We create a matrix with all groundwater signatures, calculate their
 % correlation with each other, and plot the results.
 
+% GW
 Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.TotalRR,...
     CAMELS_signatures_Groundwater.EventRR,...
@@ -66,7 +65,7 @@ Groundwater_matrix = [...
     CAMELS_signatures_Groundwater.Recession_a_Seasonality,...
     CAMELS_signatures_Groundwater.AverageStorage,...
     CAMELS_signatures_Groundwater.RecessionParameters(:,2),...
-    tmp,...
+    CAMELS_signatures_Groundwater.RecessionParameters(:,3),...
     CAMELS_signatures_Groundwater.MRC_num_segments,...
     CAMELS_signatures_Groundwater.BFI,...
     CAMELS_signatures_Groundwater.BaseflowRecessionK,...
@@ -99,9 +98,7 @@ signature_names_Groundwater = {...
 rho_Groundwater = corr(Groundwater_matrix,'rows','complete','type','Spearman');
 correlationMatrixCircles(rho_Groundwater,signature_names_Groundwater,'gw',fig_path)
 
-% correlation matrix overland flow
-% We create a matrix with all overland flow signatures, calculate their
-% correlation with each other, and plot the results.
+% OF
 OverlandFlow_matrix = [...
     CAMELS_signatures_OverlandFlow.IE_effect,...
     CAMELS_signatures_OverlandFlow.SE_effect,...
@@ -132,9 +129,9 @@ correlationMatrixCircles(rho_OverlandFlow,signature_names_OverlandFlow,'of',fig_
 %% show signature distributions and calculate quantiles
 % We plot the distributions of each signature per country and calculate
 % different quantiles.
-% signature distributions groundwater
-% We update the name matrix and add units for the plots.
 
+% GW
+% We update the name matrix and add units for the plots.
 signature_names_Groundwater = {...
     'TotalRR [-]',...
     'EventRR [-]',...
@@ -161,12 +158,15 @@ ranges = [0 1; 0 1; 0 4; 0 1.2; ...
     0 6; 0 60; 0.5 3.5; 0 1; ...
     0 0.6; 0 1.5; 0 .6; 0 1;...
     0 1.];
+
+% We define the colours for the plots.
 colour_mat = [
     169 90 161;
     245 121 58;
     133 192 249;
     15 32 128]./255;
-colour_mat = [colour_mat 1*ones(4,1)]; %brewermap(4,'Spectral')
+colour_mat = [colour_mat 1*ones(4,1)]; 
+
 fig = figure('pos',[10 10 800 500]);
 groundwater_quantile_mat = NaN(17,5);
 groundwater_quantile_mat_country = NaN(17,5,4);
@@ -188,7 +188,6 @@ for i = 1:17%19
             groundwater_quantile_mat_country(i,:,j) = ...
                 quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
         end
-%         [f,xi] = ksdensity(tmp(attributes.country==j), [1 2 3]); %,'linestyle','none','marker','.'
         b = bar(f);
         for k = 1:4
             b(k).FaceColor = colour_mat(k,1:3);
@@ -203,17 +202,15 @@ for i = 1:17%19
                 quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
         end
     end
-    xlabel(signature_names_Groundwater{i}, 'Interpreter', 'none') %, 'Interpreter', 'none'
+    xlabel(signature_names_Groundwater{i}, 'Interpreter', 'none') 
     xlim(ranges(i,:))
     set(gca,'YTickLabel',[]);
 end
 % leg = legend('US','GB','AUS','BR','box','off');
-% leg = legend('US','BR','GB','AUS','box','off');
-% leg.Position = [0.837 0.157 0.101 0.113];
 % leg.Position = [0.733 0.123 0.134 0.081];
 saveFig(fig,strcat('distr_gw'),fig_path,'-dpng')
 
-% signature distributions overland flow
+% OF
 % We update the name matrix and add units for the plots.
 signature_names_OverlandFlow = {...
     'IE_effect [-]',...
@@ -228,9 +225,6 @@ signature_names_OverlandFlow = {...
     };
 
 % We define the ranges to obtain nicer plots.
-% ranges = [-0.4 0.8; 0 1; 0 1; 0 60; ...
-%     0 1; 0 150; 0 1; 0 1; ...
-%     0 150; 0 10];
 ranges = [-0.4 0.8; 0 1; 0 1; 0 1; ...
     0 60; 0 150; 0 1; 0 1; ...
     0 150];
@@ -246,23 +240,14 @@ for i = 1:9
         j = j_vec(k);
         [f,xi] = ksdensity(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 100));
         plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-%         histogram(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 20),...
-%             'facecolor',colour_mat(j,1:3),'edgecolor','none')
         overland_flow_quantile_mat_country(i,:,j) = ...
             quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
-    end
-    if i == 3 || i == 4 || i == 8
-%         ylim([0 10])
-    else
-%         set(gca,'xscale','lin')
     end
     xlabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
     xlim(ranges(i,:))
     set(gca,'YTickLabel',[]);
 end
 % leg = legend('US','GB','AUS','BR','box','off');
-% leg = legend('US','BR','GB','AUS','box','off');
-% leg.Position = [.55 .17 .10 .11];
 % leg.Position = [0.834 0.184 0.152 0.162];
 saveFig(fig,strcat('distr_of'),fig_path,'-dpng')
 
@@ -271,7 +256,7 @@ saveFig(fig,strcat('distr_of'),fig_path,'-dpng')
 % possible to investigate how they vary with other climate and landscape
 % attributes, but this is not shown in the paper.
 
-% groundwater and aridity
+% GW and aridity
 signature_names_Groundwater = {...
     'TotalRR',...
     'EventRR',...
@@ -291,11 +276,14 @@ signature_names_Groundwater = {...
     'EventRR_TotalRR_ratio',...
     'VariabilityIndex',...
     };
+
+% We define the colours for the plots.
 colour_mat = [
     169 90 161;
     245 121 58;
     133 192 249;
-    15 32 128]./255;%flip(parula(4));%brewermap(4,'Spectral');
+    15 32 128]./255;
+
 fig = figure('pos',[100 100 800 600]);
 var = attributes.aridity;
 groundwater_aridity_rho_s = NaN(17,5); % 1-4 countries, 5 total
@@ -316,19 +304,15 @@ for i = 1:17
     title(strcat('\rho_s =','{ }',num2str(round(groundwater_aridity_rho_s(i,5),2))))
     ylim([quant(1) quant(5)])
     ylabel(signature_names_Groundwater{i}, 'Interpreter', 'none')
-    %     xlabel('Snow frac [-]')
-    %     xlabel('P seasonality')
-    %     xlim([-1.5 1.5])
     xlabel('PET/P')
     xlim([0.1 10])
     set(gca,'xscale','log')
 end
-% leg = legend('US','GB','AUS','BR','box','off');
 leg = legend('US','BR','GB','AUS','box','off');
 leg.Position = [0.461 0.143 0.089 0.095];
 saveFig(fig,strcat('aridity_gw'),fig_path,'-dpng')
 
-% overland flow and aridity
+% OF and aridity
 signature_names_OverlandFlow = {...
     'IE_effect',...
     'SE_effect',...
@@ -344,9 +328,8 @@ colour_mat = [
     169 90 161;
     245 121 58;
     133 192 249;
-    15 32 128]./255;%brewermap(4,'Spectral');
+    15 32 128]./255;
 fig = figure('pos',[100 100 800 300]);
-% var = attributes.aridity;
 overland_flow_aridity_rho_s = NaN(9,5); % 1-4 countries, 5 total
 for i = 1:9
     subplot(2,5,i)
@@ -364,14 +347,10 @@ for i = 1:9
     title(strcat('\rho_s =','{ }',num2str(round(overland_flow_aridity_rho_s(i,5),2))))
     ylim([quant(1) quant(5)])
     ylabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
-    %     xlabel('Snow frac [-]')
-    %     xlabel('P seasonality')
-    %     xlim([-1.5 1.5])
     xlabel('PET/P')
     xlim([0.1 10])
     set(gca,'xscale','log')
 end
-% leg = legend('US','GB','AUS','BR','box','off');
 leg = legend('US','BR','GB','AUS','box','off');
 leg.Position = [0.787 0.189 0.1 0.189];
 saveFig(fig,strcat('aridity_of'),fig_path,'-dpng')
