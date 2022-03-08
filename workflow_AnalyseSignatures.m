@@ -98,6 +98,11 @@ signature_names_Groundwater = {...
 rho_Groundwater = corr(Groundwater_matrix,'rows','complete','type','Spearman');
 correlationMatrixCircles(rho_Groundwater,signature_names_Groundwater,'gw',fig_path)
 
+t_Groundwater = array2table(rho_Groundwater);
+t_Groundwater.Properties.RowNames = convertCharsToStrings(signature_names_Groundwater);
+t_Groundwater.Properties.VariableNames = convertCharsToStrings(signature_names_Groundwater);
+writetable(t_Groundwater, strcat(results_path,'correlation_table_Groundwater.txt'), 'WriteRowNames', true);
+
 % OF
 OverlandFlow_matrix = [...
     CAMELS_signatures_OverlandFlow.IE_effect,...
@@ -125,6 +130,11 @@ signature_names_OverlandFlow = {...
 
 rho_OverlandFlow = corr(OverlandFlow_matrix,'rows','complete','type','Spearman');
 correlationMatrixCircles(rho_OverlandFlow,signature_names_OverlandFlow,'of',fig_path)
+
+t_OverlandFlow = array2table(rho_OverlandFlow);
+t_OverlandFlow.Properties.RowNames = convertCharsToStrings(signature_names_OverlandFlow);
+t_OverlandFlow.Properties.VariableNames = convertCharsToStrings(signature_names_OverlandFlow);
+writetable(t_OverlandFlow, strcat(results_path,'correlation_table_OverlandFlow.txt'), 'WriteRowNames', true);
 
 %% show signature distributions and calculate quantiles
 % We plot the distributions of each signature per country and calculate
