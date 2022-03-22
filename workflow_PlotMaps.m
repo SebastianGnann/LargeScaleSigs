@@ -59,8 +59,8 @@ end
 
 %% Plot maps
 %% Aridity
-chosen_attribute = attributes.aridity;
-c_limits = [0 2];
+chosen_attribute = attributes.p_mean*365;
+c_limits = [0 2000];
 % chosen_attribute(attributes.frac_snow>0.3) = NaN;
 
 attribute_name = 'PET/P [-]';
@@ -74,7 +74,17 @@ plotMap_US(attributes.gauge_lat,attributes.gauge_lon,...
     'ID',attributes.gauge_id,...
     'colour_scheme',colour_scheme,'flip_colour_scheme',flip_colour_scheme,...
     'c_limits',c_limits,'c_log_scale',c_log_scale,...
+    'c_upper_limit_open',true,...
     'figure_name',' ','save_figure',false,'figure_path',fig_path)
+
+% from Wlostowski paper
+CZO_aridity = [0.98, 0.81, mean([3.49, 3.46]), mean([0.30, 0.22]), 1.40];
+CZO_lat = [40.66, 39.73, mean([32.43, 32.45]), mean([18.33, 18.28]), 40.31];
+CZO_lon = [-77.91, -123.64, mean([-110.76, -110.74]), mean([-65.75, -65.79]), -88.32];
+CZO_lat(4) = 27;
+CZO_lon(4) = -65.5; % fake coordinates to add it to map
+% SH EC (MG OR) (MAM IC) US
+scatterm(CZO_lat, CZO_lon, 100, CZO_aridity,'filled', 'markeredgecolor', 'k')
 
 plotMap_GB(attributes.gauge_lat,attributes.gauge_lon,...
     chosen_attribute,...

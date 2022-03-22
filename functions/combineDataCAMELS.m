@@ -67,6 +67,8 @@ attributes.gauge_id = [CAMELS_US_data.gauge_id; CAMELS_GB_data.gauge_id;
     CAMELS_AUS_data.gauge_id; CAMELS_BR_data.gauge_id];
 attributes.country = [ones(size(CAMELS_US_data.gauge_lon)); ones(size(CAMELS_GB_data.gauge_lon))*2; 
     ones(size(CAMELS_AUS_data.long_outlet))*3; ones(size(CAMELS_BR_data.gauge_lon))*4];
+attributes.area = [CAMELS_US_data.area_gages2; CAMELS_GB_data.area; 
+    CAMELS_AUS_data.catchment_area; CAMELS_BR_data.area];
 
 % We remove catchments with incomplete records and human impacts. This is
 % decided rather subjectively based on the available attributes. The main
@@ -111,5 +113,6 @@ attributes.gauge_lat(rmv) = [];
 attributes.gauge_lon(rmv) = [];
 attributes.gauge_id(rmv) = [];
 attributes.country(rmv) = [];
+attributes.area(rmv) = [];
 
 end
