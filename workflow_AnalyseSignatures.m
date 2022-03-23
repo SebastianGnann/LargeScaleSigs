@@ -219,6 +219,8 @@ end
 % leg = legend('US','GB','AUS','BR','box','off');
 % leg.Position = [0.733 0.123 0.134 0.081];
 saveFig(fig,strcat('distr_gw'),fig_path,'-dpng')
+writetable(array2table(groundwater_quantile_mat),...
+    strcat(results_path,'signature_percentiles_Groundwater.txt'))
 
 % OF
 % We update the name matrix and add units for the plots.
@@ -260,6 +262,8 @@ end
 % leg = legend('US','GB','AUS','BR','box','off');
 % leg.Position = [0.834 0.184 0.152 0.162];
 saveFig(fig,strcat('distr_of'),fig_path,'-dpng')
+writetable(array2table(overland_flow_quantile_mat),...
+    strcat(results_path,'signature_percentiles_OverlandFlow.txt'))
 
 %% signature variations with climate aridity
 % We now analyse how the signatures vary with climate aridity. It is also
