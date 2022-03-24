@@ -3,9 +3,9 @@ function correlationMatrixCircles(rho,signature_names,set,fig_path)
 % creates plot showing correlation matrix
 
 if strcmp(set,'gw')
-    fig = figure('pos',[10 10 560 672]);
+    fig = figure('pos',[10 10 560 672]); hold on
 elseif strcmp(set,'of')
-    fig = figure('pos',[10 10 320 384]);
+    fig = figure('pos',[10 10 320 384]); hold on
 else
     error('Set not defined.')
 end
@@ -13,18 +13,23 @@ r = rho;
 r(r==1) = NaN;
 % labels
 labels = signature_names;
-% scatter plot
+% enclose markers in a grid
 n = size(r, 1);
+% xl = [1:n+1;repmat(n+1, 1, n+1)];
+% xl = [xl(:, 1), xl(:, 1:end-1)];
+% yl = repmat(n+1:-1:1, 2, 1);
+xl = [2:n;repmat(n+1, 1, n-1)];
+xl = [xl(:, 1), xl(:, 1:end-1)];
+xl2 = xl; 
+xl2(1,1) = 1;
+yl = repmat(n+0.5:-1:2.5, 2, 1);
+line(xl2, yl, 'color', [.5 .5 .5 .5]) % horizontal lines
+line(yl, xl, 'color', [.5 .5 .5 .5]) % vertical lines
+% scatter plot
 y = triu(repmat(n+1, n, n) - (1:n)') + 0.5;
 x = triu(repmat(1:n, n, 1)) + 0.5;
 x(x == 0.5) = NaN;
 scatter(x(:), y(:), 400.*abs(r(:)), r(:), 'filled', 'MarkerFaceAlpha', 1.0)
-% enclose markers in a grid
-xl = [1:n+1;repmat(n+1, 1, n+1)];
-xl = [xl(:, 1), xl(:, 1:end-1)];
-yl = repmat(n+1:-1:1, 2, 1);
-line(xl, yl, 'color', [.5 .5 .5 .5]) % horizontal lines
-line(yl, xl, 'color', [.5 .5 .5 .5]) % vertical lines
 % show labels
 text(1:n-1, (n-1:-1:1) + 1.5, labels(1:end-1), 'HorizontalAlignment', 'right','Interpreter','None')
 text((2:n) + 0.75, repmat(n + 1, n-1, 1) + 0.5, labels(2:end), ...
