@@ -68,6 +68,7 @@ for j = 1:length(ind)
     i = ind(j);
     
     % close previous plots
+    % add breakpoint here to go through plots catchment by catchment
     close all
     
     % extract catchment data
