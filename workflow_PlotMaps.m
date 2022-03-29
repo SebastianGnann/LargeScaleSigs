@@ -154,13 +154,13 @@ plotMap_BR(attributes.gauge_lat,attributes.gauge_lon,...
 
 %% BaseflowRecessionK
 chosen_attribute = CAMELS_signatures_Groundwater.BaseflowRecessionK;
-c_limits = [0.05 0.5];
+c_limits = [0.0 0.5];
 chosen_attribute(attributes.frac_snow>0.3) = NaN;
 
 attribute_name = 'BaseflowRecessionK [1/d]';
 colour_scheme = 'YlGnBu';
 flip_colour_scheme = false;
-c_log_scale = true;
+c_log_scale = false;
 
 plotMap_US(attributes.gauge_lat,attributes.gauge_lon,...
     chosen_attribute,...
