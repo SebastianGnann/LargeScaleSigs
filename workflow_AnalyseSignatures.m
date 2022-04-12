@@ -248,22 +248,57 @@ for i = 1:9
     hold on
     tmp = OverlandFlow_matrix(:,i);
     overland_flow_quantile_mat(i,:) = quantile(tmp, [.01 .25 .5 .75 .99]);
-    for k = 1:4
-        j = j_vec(k);
-        [f,xi] = ksdensity(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 100));
-        plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
-        overland_flow_quantile_mat_country(i,:,j) = ...
-            quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+    
+    if ismember(i, [3,4,8])
+        % to see the distribution of the significance values better we show
+        % a histogram on a log scale - since many values are 0, they are
+        % set to a very small value to still be seen on the log scale
+        for k = 1:4
+            x = tmp(attributes.country==j);
+            x(x==0) = 10^-20;
+            j = j_vec(k);
+            %[~,edges] = histcounts(log(x),100);
+            edges = 10.^([-20:2:0]);
+            [f,xi] = ksdensity(x,edges);
+            %plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
+            h = histogram(x,edges,'normalization','probability','facecolor','None','DisplayStyle','stairs',...
+                'edgecolor',colour_mat(j,1:3),'linewidth',2,'edgealpha',1.0);
+            overland_flow_quantile_mat_country(i,:,j) = ...
+                quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+        end
+        % update ticks
+        xlabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
+        xlim(ranges(i,:))
+        set(gca,'YTickLabel',[]);
+        set(gca,'XTickLabel',{'0', '10^{-10}', '10^{0}'});
+        set(gca,'xscale','log')
+    else    
+        for k = 1:4
+            j = j_vec(k);
+            [f,xi] = ksdensity(tmp(attributes.country==j),linspace(ranges(i,1), ranges(i,2), 100));
+            plot(xi,f,'linewidth',2,'color',colour_mat(j,:))
+            overland_flow_quantile_mat_country(i,:,j) = ...
+                quantile(tmp(attributes.country==j), [.01 .25 .5 .75 .99]);
+        end
+        xlabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
+        xlim(ranges(i,:))
+        set(gca,'YTickLabel',[]);
     end
-    xlabel(signature_names_OverlandFlow{i}, 'Interpreter', 'none')
-    xlim(ranges(i,:))
-    set(gca,'YTickLabel',[]);
 end
 % leg = legend('US','GB','AUS','BR','box','off');
 % leg.Position = [0.834 0.184 0.152 0.162];
 saveFig(fig,strcat('distr_of'),fig_path,'-dpng')
 writetable(array2table(overland_flow_quantile_mat),...
     strcat(results_path,'signature_percentiles_OverlandFlow.txt'))
+
+%%
+x = CAMELS_signatures_OverlandFlow.Storage_thresh_signif;
+x(x==0) = 1e-19;
+%[~,edges] = histcounts(log10(x));
+figure
+% histogram(log10(x))
+histogram(x,10.^([-20:2:0]))
+set(gca, 'xscale','log')
 
 %% signature variations with climate aridity
 % We now analyse how the signatures vary with climate aridity. It is also

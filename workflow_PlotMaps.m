@@ -59,8 +59,8 @@ end
 
 %% Plot maps
 %% Aridity
-chosen_attribute = attributes.p_mean*365;
-c_limits = [0 2000];
+chosen_attribute = attributes.aridity;
+c_limits = [0 2];
 % chosen_attribute(attributes.frac_snow>0.3) = NaN;
 
 attribute_name = 'PET/P [-]';
@@ -77,8 +77,9 @@ plotMap_US(attributes.gauge_lat,attributes.gauge_lon,...
     'c_upper_limit_open',true,...
     'figure_name',' ','save_figure',false,'figure_path',fig_path)
 
-% from Wlostowski paper
-CZO_aridity = [0.98, 0.81, mean([3.49, 3.46]), mean([0.30, 0.22]), 1.40];
+% from Wlostowski et al. (2021) paper
+CZO_aridity = [1002/1036, 1254/1636, mean([1889/594, 1854/546]), mean([1335/3953, 1135/5313]), 1263/926];
+%CZO_aridity = [0.98, 0.81, mean([3.49, 3.46]), mean([0.30, 0.22]), 1.40];
 CZO_lat = [40.66, 39.73, mean([32.43, 32.45]), mean([18.33, 18.28]), 40.31];
 CZO_lon = [-77.91, -123.64, mean([-110.76, -110.74]), mean([-65.75, -65.79]), -88.32];
 CZO_lat(4) = 27;
