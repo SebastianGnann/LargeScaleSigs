@@ -34,7 +34,7 @@ if ~results_loaded
     CAMELS_BR_data = load('CAMELS_Matlab/Data/CAMELS_BR_data.mat');
     % CAMELS_CL_data = load('CAMELS_Matlab/Data/CAMELS_CL_data.mat');
     
-    %% calculate signatures using TOSSH
+    %% merge catchment data
     % We first merge the different CAMELS datasets and remove catchments that
     % do not meet our quality criteria (e.g. because of human impacts). We also
     % extract a few common attributes, such as aridity or mean precipitation.

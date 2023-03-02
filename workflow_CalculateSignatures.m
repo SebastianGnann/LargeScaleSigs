@@ -79,6 +79,15 @@ fprintf('Calculating overland flow signatures...\n')
 CAMELS_signatures_OverlandFlow = calc_McMillan_OverlandFlow(...
     Q_mat, t_mat, P_mat);
 
+% We now add the attribute files to the signature files.
+f = fieldnames(attributes);
+ for i = 1:length(f)
+    CAMELS_signatures_Groundwater.(f{i}) = attributes.(f{i});
+ end
+ for i = 1:length(f)
+    CAMELS_signatures_OverlandFlow.(f{i}) = attributes.(f{i});
+ end
+
 % We can save the results as mat files which can be easily loaded.
 fprintf('Saving results...\n')
 save(strcat(results_path,'CAMELS_signatures_Groundwater.mat'),...
@@ -90,4 +99,4 @@ save(strcat(results_path,'CAMELS_signatures_OverlandFlow.mat'),...
 writetable(struct2table(CAMELS_signatures_Groundwater),...
     strcat(results_path,'CAMELS_signatures_Groundwater.txt'))
 writetable(struct2table(CAMELS_signatures_OverlandFlow),...
-    strcat(results_path,'CAMELS_US_signatures_OverlandFlow.txt'))
+    strcat(results_path,'CAMELS_signatures_OverlandFlow.txt'))
